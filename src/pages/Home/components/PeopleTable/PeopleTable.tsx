@@ -15,12 +15,13 @@ const PeopleTable: React.FC<PeopleTableInterface> = () => {
   const dispatch = useDispatch()
 
   const statePeople = useSelector((store: AppStore) => store.people)
+  const favoritePeople = useSelector((store: AppStore) => store.favorites)
 
   const findPerson = (person: Person) =>
-    !!selectedPeople.find((p) => p.id === person.id)
+    !!favoritePeople.find((p) => p.id === person.id)
 
   const filterPerson = (person: Person) =>
-    selectedPeople.filter((p) => p.id != person.id)
+    favoritePeople.filter((p) => p.id != person.id)
 
   const handleChange = (person: Person) => {
     const filteredPeople = findPerson(person)
@@ -70,32 +71,40 @@ const PeopleTable: React.FC<PeopleTableInterface> = () => {
       flex: 1,
       renderCell: (params: GridRenderCellParams) => <>{params.value}</>,
     },
+    {
+      field: 'levelOfHappiness',
+      headerName: 'levelOfHappiness',
+      flex: 1,
+      renderCell: (params: GridRenderCellParams) => <>{params.value}</>,
+    },
   ]
 
   useEffect(() => {
+    setSelectedPeople(favoritePeople)
+  }, [favoritePeople])
+  /* 
+  useEffect(() => {
     dispatch(addPeople(People))
-  }, [])
+  }, []) */
 
   return (
-    <div>
-      <DataGrid
-        disableColumnSelector
-        disableRowSelectionOnClick
-        autoHeight
-        pageSizeOptions={[pageSize]}
-        columns={colums}
-        rows={statePeople}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: pageSize,
-            },
+    <DataGrid
+      disableColumnSelector
+      disableRowSelectionOnClick
+      autoHeight
+      pageSizeOptions={[pageSize]}
+      columns={colums}
+      rows={statePeople}
+      initialState={{
+        pagination: {
+          paginationModel: {
+            pageSize: pageSize,
           },
-        }}
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        getRowId={(row: any) => row.id}
-      />
-    </div>
+        },
+      }}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      getRowId={(row: any) => row.id}
+    />
   )
 }
 

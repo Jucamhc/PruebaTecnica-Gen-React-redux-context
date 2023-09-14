@@ -1,34 +1,23 @@
 import { People } from '@/data'
 import { Person } from '@/models'
-import { addFavorite, addPeople } from '@/redux/states'
+import { addFavorite, addPeople, removeFavorite } from '@/redux/states'
 import { AppStore } from '@/redux/store'
-import { Checkbox } from '@mui/material'
+import { Checkbox, IconButton } from '@mui/material'
 import { GridRenderCellParams, DataGrid } from '@mui/x-data-grid'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import Delete from '@mui/icons-material/Delete'
 
 export interface FavoriteTableInterface {}
 
 const FavoriteTable: React.FC<FavoriteTableInterface> = () => {
-  const [selectedPeople, setSelectedPeople] = useState<Person[]>([])
   const pageSize = 5
   const dispatch = useDispatch()
 
   const stateFavorites = useSelector((store: AppStore) => store.favorites)
 
-  const findPerson = (person: Person) =>
-    !!selectedPeople.find((p) => p.id === person.id)
-
-  const filterPerson = (person: Person) =>
-    selectedPeople.filter((p) => p.id != person.id)
-
-  const handleChange = (person: Person) => {
-    const filteredPeople = findPerson(person)
-      ? filterPerson(person)
-      : [...selectedPeople, person]
-
-    dispatch(addFavorite(filteredPeople))
-    setSelectedPeople(filteredPeople)
+  const handleClick = (person: Person) => {
+    dispatch(removeFavorite(person))
   }
 
   const colums = [
@@ -42,11 +31,16 @@ const FavoriteTable: React.FC<FavoriteTableInterface> = () => {
       renderCell: (params: GridRenderCellParams) => (
         <>
           {
-            <Checkbox
-              size="small"
-              checked={findPerson(params.row)}
-              onChange={() => handleChange(params.row)}
-            />
+            <IconButton
+              aria-label="favorites"
+              color="secondary"
+              component="label"
+              onClick={() => {
+                handleClick(params.row)
+              }}
+            >
+              <Delete />
+            </IconButton>
           }
         </>
       ),

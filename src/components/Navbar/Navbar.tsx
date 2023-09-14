@@ -3,10 +3,15 @@ import React from 'react'
 import { CustomDialog, dialogOpenSubject$ } from '..'
 import { FavoriteTable } from './FavoriteTable'
 import FavoriteIcon from '@mui/icons-material/Favorite'
+import { useSelector } from 'react-redux'
+import { AppStore } from '@/redux/store'
 
 export interface NavbarInterface {}
 
 const Navbar: React.FC<NavbarInterface> = () => {
+ useSelector((store: AppStore) => store.favorites)
+
+
   const handleClick = () => {
     dialogOpenSubject$.setSubject = true
   }
@@ -31,7 +36,6 @@ const Navbar: React.FC<NavbarInterface> = () => {
             <FavoriteIcon />
           </IconButton>
 
-          <Button variant="outlined">Open Favorites</Button>
         </Toolbar>
       </AppBar>
     </>
